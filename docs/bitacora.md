@@ -69,3 +69,58 @@ US$0.00
 Próximo paso
 
 Crear la estructura website, comprender el funcionamiento de HTML, CSS y JavaScript, y comenzar el desarrollo del CV que posteriormente será desplegado en AWS.
+
+# Día 2 — 05/08/2026
+
+## Objetivo del día:
+Comprender el funcionamiento de IAM, las identidades, las políticas de permisos, el principio de mínimo privilegio y el modelo de responsabilidad compartida en AWS.
+
+## Qué investigué antes de construir:
+- La diferencia entre el usuario raíz y una identidad de IAM.
+- Qué es un ARN y por qué identifica de forma única a un recurso.
+- La diferencia entre autenticación y autorización.
+- El principio de mínimo privilegio.
+
+## Qué hice paso a paso:
+1. Revisé la identidad con la que inicié sesión en AWS.
+2. Localicé y documenté el ARN de mi identidad sin exponer información sensible.
+3. Analicé las políticas de permisos asignadas a mi identidad.
+4. Comprendí la diferencia entre una política administrada por AWS y una administrada por el cliente.
+5. Exploré la pestaña **Último acceso (Access Advisor)** para entender cómo ayuda a reducir permisos innecesarios.
+6. Elaboré un diagrama del flujo de identidad y permisos utilizando draw.io.
+7. Completé la tabla del modelo de responsabilidad compartida para los servicios del proyecto.
+
+## Qué logré mostrar en pantalla:
+- Mi identidad de IAM y su ARN.
+- Las políticas asignadas a la identidad.
+- La información de "Último acceso".
+- El diagrama del flujo de autenticación y autorización.
+- La tabla de responsabilidad compartida.
+
+## Qué se rompió:
+No se presentó ningún problema técnico durante las actividades.
+
+## Mensaje de error o síntoma:
+No hubo mensajes de error.
+
+## Qué intenté durante los primeros 30 minutos:
+Exploré la consola de IAM para identificar mi identidad, comprender las políticas asignadas y localizar la sección "Último acceso".
+
+## Cómo lo resolví o qué ayuda necesité:
+Necesité orientación para interpretar el funcionamiento de IAM, comprender la diferencia entre autenticación y autorización y entender el propósito de Access Advisor dentro del principio de mínimo privilegio.
+
+## Algo que aprendí y no sabía ayer:
+Aprendí que AWS primero autentica una identidad para verificar quién realiza la acción y luego autoriza o deniega la solicitud evaluando las políticas asociadas a esa identidad. También comprendí el modelo de responsabilidad compartida y la diferencia entre la seguridad **de la nube** y la seguridad **en la nube**.
+
+## Duda que quedó abierta:
+¿Cómo se escriben realmente las políticas de IAM en formato JSON y cómo funcionan sus elementos (Effect, Action, Resource y Condition)?
+
+## Recursos creados o modificados:
+- Documento de responsabilidad compartida.
+- Diagrama del flujo de identidad y permisos (draw.io y PNG).
+
+## Costo acumulado en la cuenta:
+US$ 0.00
+
+## Próximo paso:
+Preparar los permisos necesarios para los servicios del proyecto y comenzar la creación de los primeros recursos (S3, CloudFront, Lambda, API Gateway y DynamoDB) siguiendo el principio de mínimo privilegio.
