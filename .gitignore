@@ -1,0 +1,6 @@
+#Archivos temp windows
+Thumbs.db
+# Configuración personal de Visual Studio Code
+.vscode/
+# Variables de entorno y credenciales
+.env
