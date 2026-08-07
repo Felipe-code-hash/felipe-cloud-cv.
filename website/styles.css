@@ -13,3 +13,18 @@ body {
     background-color: #f4f6f8;
     color: #222;
 }
+
+h1 {
+    font-size: 36px;
+    margin-bottom: 10px;
+}
+
+h2 {
+    margin-top: 30px;
+    margin-bottom: 10px;
+}
+
+h3 {
+    margin-top: 20px;
+    margin-bottom: 8px;
+}
