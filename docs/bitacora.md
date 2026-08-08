@@ -201,3 +201,97 @@ Costo acumulado en la cuenta: US$ 0.00 (Todos los recursos utilizados forman par
 
 Próximo paso:
 Iniciar el Día 4: Analizar el comportamiento de la caché en CloudFront, inspeccionar encabezados HTTP (x-cache, age) y realizar pruebas de invalidación de caché.
+
+# Día 4 — 08/08/2026
+
+## Objetivo del día
+
+Comprender el funcionamiento de CloudFront como CDN, analizar el comportamiento de la caché, comprobar HTTPS y realizar mediciones comparables de rendimiento desde dos redes diferentes.
+
+## Qué investigué antes de construir
+
+- Diferencia entre una región de AWS y una ubicación de borde (Edge Location / POP).
+- Funcionamiento de CloudFront como CDN.
+- Conceptos de caché, `Hit`, `Miss` y `age`.
+- Función del encabezado `x-amz-cf-pop`.
+- Diferencia entre HTTPS y SSE-S3.
+- Funcionamiento de las invalidaciones de CloudFront.
+- Lugar donde se pueden consultar costos y facturación de AWS.
+
+## Qué hice paso a paso
+
+1. Accedí a la distribución de CloudFront `E2KZG3FJTI7UD1`.
+2. Abrí las herramientas de desarrollo del navegador y revisé las solicitudes de `index.html`.
+3. Realicé cinco mediciones desde la red A.
+4. Registré el código HTTP, tamaño, tiempo, `x-cache`, `age` y `x-amz-cf-pop`.
+5. Cambié a una conexión mediante datos móviles.
+6. Realicé otras cinco mediciones desde la red B.
+7. Calculé el promedio, mínimo y máximo de ambas series.
+8. Comparé los resultados de ambas redes.
+9. Analicé el comportamiento de la caché de CloudFront.
+10. Creé una invalidación específica para `/index.html`.
+11. Comprobé que la invalidación terminó con estado `Completed`.
+12. Revisé dónde se consultarían los costos y la facturación, aunque no fue posible acceder al detalle por falta de permisos.
+
+## Qué logré mostrar en pantalla
+
+- La distribución de CloudFront funcionando mediante HTTPS.
+- Solicitudes a `index.html` atendidas con `x-cache: Hit`.
+- El POP `MIA3-P5` en el encabezado `x-amz-cf-pop`.
+- Valores de `age` correspondientes a objetos almacenados en caché.
+- Mediciones desde dos redes diferentes.
+- La invalidación de `/index.html` con estado `Completed`.
+
+## Qué se rompió
+
+No se presentó una falla técnica durante las pruebas.
+
+La demostración completa de actualización de `index.html` seguida de una invalidación fue omitida, por lo que no se comprobó experimentalmente el cambio de una versión antigua a una nueva mediante un `Miss`.
+
+## Mensaje de error o síntoma
+
+No se presentó ningún mensaje de error durante las mediciones ni durante la invalidación.
+
+La limitación encontrada fue que el usuario IAM del laboratorio no cuenta con permisos para consultar directamente la información detallada de facturación.
+
+## Qué intenté durante los primeros 30 minutos
+
+Se realizaron pruebas de rendimiento mediante las herramientas de desarrollo del navegador y se analizaron los encabezados HTTP de `index.html`.
+
+Posteriormente se repitieron las mediciones utilizando una conexión mediante datos móviles para obtener una segunda serie de resultados comparables.
+
+## Cómo lo resolví o qué ayuda necesité
+
+No fue necesario resolver un error técnico.
+
+Para la parte de facturación se siguió la indicación del tutor de no realizar la consulta debido a la falta de permisos. Se dejó documentado que la información de costos puede consultarse mediante AWS Billing and Cost Management cuando se dispone de los permisos correspondientes.
+
+## Algo que aprendí y no sabía ayer
+
+Aprendí que CloudFront no necesariamente obtiene el archivo desde S3 en cada solicitud. Cuando existe una copia válida en caché, puede responder mediante un `Cache Hit`.
+
+También aprendí que `x-amz-cf-pop` permite identificar la ubicación de borde que atendió una solicitud y que el tiempo observado por el usuario depende tanto de CloudFront como de factores relacionados con su propia conexión de red.
+
+Además, comprendí que una invalidación permite eliminar la copia cacheada de un objeto específico para que CloudFront pueda obtener nuevamente una versión actualizada.
+
+## Duda que quedó abierta
+
+Quedó pendiente comprobar experimentalmente el comportamiento completo de una actualización de `index.html`: modificar el archivo en S3, comprobar la versión anterior servida por CloudFront y posteriormente realizar una invalidación para observar el cambio.
+
+## Recursos creados o modificados
+
+- **CloudFront Distribution:** `E2KZG3FJTI7UD1`
+- **S3 Bucket:** `felipe-cv-2026-2009`
+- **Objeto utilizado en las pruebas:** `index.html`
+- **Invalidación de CloudFront:** `/index.html`
+- **Archivo de documentación:** `docs/bitacora.md`
+
+## Costo acumulado en la cuenta
+
+US$ **No disponible para consulta**
+
+El usuario IAM utilizado no tiene permisos para consultar Billing and Cost Management. Según la información disponible del laboratorio y la indicación del tutor, los créditos asignados continúan disponibles.
+
+## Próximo paso
+
+Continuar con el siguiente día del proyecto y mantener actualizado el inventario de recursos, la bitácora y las evidencias correspondientes.
