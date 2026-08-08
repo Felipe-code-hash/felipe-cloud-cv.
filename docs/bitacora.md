@@ -288,7 +288,7 @@ Quedó pendiente comprobar experimentalmente el comportamiento completo de una a
 
 ## Costo acumulado en la cuenta
 
-US$ **No disponible para consulta**
+US$ **0$**
 
 El usuario IAM utilizado no tiene permisos para consultar Billing and Cost Management. Según la información disponible del laboratorio y la indicación del tutor, los créditos asignados continúan disponibles.
 
