@@ -2,7 +2,7 @@
 
 Se realizaron cinco mediciones desde la red A y cinco desde la red B utilizando las herramientas de desarrollo del navegador y observando el tiempo de respuesta de `index.html`.
 
-#### Red A
+#### Red A.
 
 - **Promedio:** 331.6 ms
 - **Mínimo:** 218 ms
@@ -10,7 +10,7 @@ Se realizaron cinco mediciones desde la red A y cinco desde la red B utilizando 
 - **x-cache:** Hit en las cinco mediciones
 - **Edge Location (POP):** MIA3-P5
 
-#### Red B 
+#### Red B.
 
 - **Promedio:** 100.6 ms
 - **Mínimo:** 50 ms
