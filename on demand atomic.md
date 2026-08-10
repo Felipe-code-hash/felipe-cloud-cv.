@@ -1,0 +1,1 @@
+La capacidad bajo demanda permite que DynamoDB gestione automáticamente la capacidad de lectura y escritura según las solicitudes, sin tener que definir previamente unidades de capacidad. Es apropiado para este laboratorio porque el tráfico es variable y no necesitamos planificar capacidad fija.
