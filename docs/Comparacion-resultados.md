@@ -10,7 +10,7 @@ Se realizaron cinco mediciones desde la red A y cinco desde la red B utilizando 
 - **x-cache:** Hit en las cinco mediciones
 - **Edge Location (POP):** MIA3-P5
 
-#### Red B (datos móviles)
+#### Red B 
 
 - **Promedio:** 100.6 ms
 - **Mínimo:** 50 ms
