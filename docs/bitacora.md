@@ -295,3 +295,175 @@ El usuario IAM utilizado no tiene permisos para consultar Billing and Cost Manag
 ## Próximo paso
 
 Continuar con el siguiente día del proyecto y mantener actualizado el inventario de recursos, la bitácora y las evidencias correspondientes.
+
+
+# Día 5 — 10 de agosto de 2026
+
+## Objetivo del día:
+
+Comparar la latencia de diferentes regiones de AWS desde Windows, justificar por qué el laboratorio utiliza la región **us-east-2 (Ohio)** y construir un modelo de costos para **1.000, 100.000 y 10.000.000 de visitas mensuales**.
+
+También identificar qué componente de la arquitectura presenta el mayor crecimiento de costo cuando aumenta el tráfico y comparar el costo teórico con los créditos o beneficios disponibles en la cuenta.
+
+## Qué investigué antes de construir:
+
+Antes de realizar el modelo de costos investigué cómo se relacionan las visitas de los usuarios con los diferentes servicios de la arquitectura.
+
+La arquitectura utilizada es:
+
+**Usuario → CloudFront → S3**
+
+y para el contador:
+
+**Usuario → API Gateway → Lambda → DynamoDB**
+
+Además, **CloudWatch** se utiliza para registrar y monitorear la ejecución de los servicios.
+
+Para el modelo se asumió inicialmente que cada visita genera aproximadamente una solicitud al contador, por lo que el número de solicitudes de API Gateway, invocaciones de Lambda y operaciones del contador en DynamoDB aumenta proporcionalmente con el número de visitas.
+
+También investigué que no todos los componentes de AWS aumentan de la misma manera. Algunos dependen principalmente del número de solicitudes, mientras que otros dependen del almacenamiento, transferencia de datos o tiempo de ejecución.
+
+## Qué hice paso a paso:
+
+1. Realicé pruebas de latencia desde Windows utilizando PowerShell hacia tres regiones de AWS:
+
+   * **us-east-2**
+   * **us-east-1**
+   * **us-west-2**
+
+2. Ejecuté cada prueba cinco veces para obtener varias mediciones y poder calcular un promedio.
+
+3. Registré la fecha, hora, proveedor de Internet y si se utilizó VPN para contextualizar los resultados.
+
+4. Analicé las posibles razones para elegir una región de AWS, considerando:
+
+   * Latencia.
+   * Cercanía de los usuarios.
+   * Disponibilidad de servicios.
+   * Precio.
+   * Residencia de datos.
+   * Recuperación ante desastres.
+   * Requisitos regulatorios.
+
+5. Utilicé AWS Pricing Calculator para construir el modelo de costos.
+
+6. Configuré los servicios principales:
+
+   * Amazon S3.
+   * Amazon CloudFront.
+   * Amazon API Gateway.
+   * AWS Lambda.
+   * Amazon DynamoDB.
+   * Amazon CloudWatch.
+
+7. Construí los escenarios de:
+
+   * **1.000 visitas mensuales.**
+   * **100.000 visitas mensuales.**
+   * **10.000.000 de visitas mensuales.**
+
+8. Para el escenario de 10.000.000 de visitas aumenté las solicitudes que dependen directamente del tráfico.
+
+9. En S3 configuré **10.000.000 de solicitudes GET**, manteniendo el almacenamiento y las operaciones de escritura iguales, debido a que las visitas no generan nuevos archivos en S3.
+
+10. En CloudFront configuré **10.000.000 de solicitudes HTTPS** y aumenté la transferencia de datos hacia Internet de **0,5 GB a 50 GB**, manteniendo el mismo consumo promedio por visita.
+
+11. En API Gateway configuré **10.000.000 de solicitudes REST API**, utilizando el supuesto de una solicitud al contador por cada visita.
+
+12. En Lambda configuré **10.000.000 de invocaciones**, manteniendo los mismos supuestos de ejecución utilizados anteriormente.
+
+13. En DynamoDB configuré:
+
+    * **10.000.000 de escrituras.**
+    * **10.000.000 de lecturas.**
+    * Lecturas eventualmente consistentes al 100 %.
+    * Tamaño promedio del elemento de 1 KB.
+    * Escrituras estándar al 100 %.
+    * Almacenamiento de datos sin aumentar, ya que el número de visitas no implica almacenar más archivos.
+
+14. La calculadora de DynamoDB convirtió las 10.000.000 de lecturas eventualmente consistentes en aproximadamente **5.000.000 de unidades de lectura**, mientras que las escrituras se mantuvieron en **10.000.000 de unidades de escritura**.
+
+15. En CloudWatch aumenté el volumen estimado de logs proporcionalmente a las ejecuciones de Lambda y configuré el almacenamiento de logs para un mes.
+
+16. Comparé los resultados de costos entre el escenario de 100.000 visitas y el escenario de 10.000.000.
+
+17. Observé que **API Gateway alcanzó aproximadamente US$35 mensuales en el escenario de 10.000.000 de visitas**, mostrando un incremento importante debido al aumento de solicitudes.
+
+## Qué logré mostrar en pantalla:
+
+* Pruebas de conexión hacia tres regiones de AWS desde PowerShell.
+* Configuración de AWS Pricing Calculator.
+* Modelo de costos para diferentes cantidades de visitas.
+* Configuración de S3, CloudFront, API Gateway, Lambda, DynamoDB y CloudWatch.
+* Escenario de **10.000.000 de visitas mensuales**.
+* En API Gateway se obtuvo un costo estimado cercano a **US$35 mensuales** para el escenario de 10 millones de solicitudes.
+* En Lambda también se observó un aumento importante del costo al pasar de 100.000 a 10.000.000 de invocaciones.
+
+## Qué se rompió:
+
+No se presentó una falla técnica importante durante el laboratorio.
+
+El principal problema fue interpretar correctamente algunos campos de AWS Pricing Calculator, especialmente las diferencias entre:
+
+* Número de operaciones.
+* Unidades de consumo.
+* Almacenamiento.
+* Transferencia de datos.
+* Unidades de lectura y escritura.
+
+## Mensaje de error o síntoma:
+
+No hubo un mensaje de error técnico.
+
+El principal síntoma fue que algunos valores mostrados por AWS Pricing Calculator no coincidían directamente con el número de visitas. Por ejemplo, **100.000 lecturas eventualmente consistentes en DynamoDB se mostraron como 50.000 unidades de uso**, debido a la conversión a unidades de lectura.
+
+## Qué intenté durante los primeros 30 minutos:
+
+Revisé la configuración de cada servicio y comparé los valores introducidos en la calculadora con el modelo de tráfico del proyecto.
+
+También revisé la relación entre las visitas y las operaciones generadas por cada componente para evitar multiplicar incorrectamente valores que no dependen directamente del número de visitas.
+
+## Cómo lo resolví o qué ayuda necesité:
+
+Resolví las dudas revisando cada servicio individualmente y relacionando sus unidades de facturación con el funcionamiento de la arquitectura.
+
+También necesité ayuda para interpretar correctamente los campos de AWS Pricing Calculator, especialmente:
+
+* Read Request Units de DynamoDB.
+* Write Request Units de DynamoDB.
+* Transferencia de datos de CloudFront.
+* Logs de CloudWatch.
+* Solicitudes de API Gateway.
+* Invocaciones y costos de Lambda.
+
+## Algo que aprendí y no sabía ayer:
+
+Aprendí que **el número de visitas no equivale directamente al costo de todos los servicios**.
+
+Cada servicio utiliza diferentes unidades de facturación. Por ejemplo, DynamoDB convierte las operaciones en unidades de lectura y escritura, CloudFront considera solicitudes y transferencia de datos, Lambda considera invocaciones y tiempo de ejecución, y CloudWatch considera principalmente el volumen de logs y almacenamiento.
+
+También aprendí que una arquitectura puede mantenerse igual mientras sus costos cambian considerablemente al aumentar el tráfico.
+
+## Duda que quedó abierta:
+
+Queda pendiente determinar con precisión **qué componente presenta el mayor crecimiento relativo y absoluto de costo** al comparar los escenarios de 100.000 y 10.000.000 de visitas.
+
+También queda pendiente comparar el costo teórico obtenido en AWS Pricing Calculator con los **créditos o beneficios actualmente disponibles en la cuenta**, sin asumir que los servicios serán gratuitos permanentemente.
+
+## Recursos creados o modificados:
+
+* Estimación de costos en AWS Pricing Calculator.
+* Configuración de los servicios S3, CloudFront, API Gateway, Lambda, DynamoDB y CloudWatch dentro de la estimación.
+* Registro de pruebas de latencia regional.
+* Bitácora del Día 5.
+
+## Costo acumulado en la cuenta:
+
+**US$ __0__**
+
+*Pendiente de verificar directamente en AWS Billing/Cost Management. El costo de la calculadora es una estimación teórica y no necesariamente representa el costo real acumulado de la cuenta.*
+
+## Próximo paso:
+
+Empezar con el dia 6
+
