@@ -1,3 +1,11 @@
+
+Región	              Prueba 1	  Prueba 2	  Prueba 3	  Prueba 4	  Prueba 5	  
+us-east-1 (Virginia)	450.420 ms	280.720 ms	251.241 ms	227.412 ms	235.068 ms	
+us-east-2 (Ohio)	    520.738 ms	284.429 ms	295.493 ms	289.902 ms	275.229 ms	
+us-west-2 (Oregón)	  706.848 ms	487.057 ms	541.481 ms	526.011 ms	495.660 ms	
+ fecha del 08/8/26
+
+
 Región	               Promedio
 us-east-1 (Virginia)	288.972 ms
 us-east-2 (Ohio)	    333.158 ms
