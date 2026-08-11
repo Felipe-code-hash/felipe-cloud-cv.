@@ -558,4 +558,132 @@ Próximo paso:
 
 Integrar DynamoDB con Lambda y API Gateway para implementar el contador de visitas del CV y realizar una actualización atómica del valor almacenado.
 
+# Día 7 — 11 de agosto de 2026
+
+## Objetivo del día:
+
+Implementar una función AWS Lambda para administrar el contador de visitas del sitio web, conectarla con DynamoDB mediante un rol de IAM con permisos de mínimo privilegio, registrar las ejecuciones mediante CloudWatch Logs y dejar el código versionado en el repositorio del proyecto.
+
+## Qué investigué antes de construir:
+
+Investigué el funcionamiento de AWS Lambda y su relación con otros servicios del proyecto. Aprendí que Lambda permite ejecutar código sin administrar servidores y que utiliza un **Execution Role de IAM** para acceder a otros servicios de AWS.
+
+También investigué cómo utilizar el SDK de AWS incluido en el runtime de Python mediante `boto3` para acceder a DynamoDB. Estudié el funcionamiento de `UpdateItem` y el concepto de **incremento atómico**, que permite aumentar el contador sin tener que leer y escribir manualmente el valor anterior.
+
+Además, revisé el principio de **mínimo privilegio**, con el objetivo de que la función solamente tuviera los permisos necesarios sobre la tabla `felipe-cv-visits`.
+
+## Qué hice paso a paso:
+
+1. Creé la función Lambda `felipe-cv-counter`.
+2. Configuré la variable de entorno:
+
+   * `TABLE_NAME = felipe-cv-visits`
+3. Revisé el Execution Role utilizado por Lambda.
+4. Verifiqué que el rol tuviera permisos para escribir registros en CloudWatch Logs.
+5. Creé una política adicional para DynamoDB.
+6. Inicialmente se consideraron los permisos `GetItem` y `UpdateItem`, pero posteriormente eliminé `GetItem` porque no era necesario para la implementación final.
+7. Dejé únicamente el permiso:
+
+   * `dynamodb:UpdateItem`
+8. Restringí el recurso exclusivamente a la tabla:
+
+   * `felipe-cv-visits`
+9. Verifiqué que la tabla utilizara `id` como clave de partición de tipo String y que no tuviera sort key.
+10. Escribí el código Python de la función utilizando `boto3`.
+11. Implementé un incremento atómico mediante `UpdateItem`.
+12. Configuré el código para utilizar `id = "home"` como elemento del contador.
+13. Utilicé `if_not_exists` para iniciar el contador en cero cuando todavía no existe.
+14. Configuré `ReturnValues = "UPDATED_NEW"` para obtener el nuevo valor del contador.
+15. La función devuelve el contador mediante un JSON con la propiedad `count`.
+16. Implementé manejo de errores para problemas de DynamoDB y errores generales.
+17. Añadí un mensaje personalizado mediante `print()` para registrar el valor actualizado.
+18. Desplegué la función mediante **Deploy**.
+19. Ejecuté una prueba controlada desde Lambda.
+20. Verifiqué que la función terminara correctamente y que el contador se incrementara en DynamoDB.
+21. Revisé los registros de ejecución en CloudWatch Logs.
+22. Verifiqué los eventos `START`, `END` y `REPORT`, además del mensaje personalizado de la función.
+23. Subí el código de Lambda al repositorio de GitHub y realicé el commit correspondiente, sin incluir credenciales.
+24. La medición de cold start no se realizó porque el tutor indicó que era una evidencia opcional.
+
+## Qué logré mostrar en pantalla:
+
+Logré mostrar una ejecución exitosa de la función Lambda con código de respuesta `200` y el valor actualizado del contador.
+
+También pude comprobar en DynamoDB que el atributo `count` se incrementó correctamente.
+
+En CloudWatch Logs se observaron los registros correspondientes a la ejecución:
+
+* `START`
+* Mensaje personalizado de actualización del contador
+* `END`
+* `REPORT`
+
+Además, se pudo observar la política de IAM restringiendo el acceso de la función a la tabla específica `felipe-cv-visits`.
+
+## Qué se rompió:
+
+No se presentó una falla funcional durante la ejecución final de Lambda. La principal dificultad estuvo relacionada con la interfaz de AWS IAM para encontrar y configurar correctamente la política de permisos de DynamoDB.
+
+## Mensaje de error o síntoma:
+
+No se presentó un error de ejecución de Lambda. La función terminó correctamente y actualizó DynamoDB.
+
+Durante la configuración de IAM, la interfaz presentó diferentes opciones y no fue inicialmente evidente dónde configurar el permiso de DynamoDB mediante el editor adecuado.
+
+## Qué intenté durante los primeros 30 minutos:
+
+Revisé la configuración de Lambda, especialmente el Execution Role, las variables de entorno y las opciones disponibles en la consola.
+
+También exploré el editor visual de políticas IAM para localizar DynamoDB y restringir el permiso a la tabla específica. Se descartaron opciones como **Function URL**, **Console to Code** y permisos generales que no eran necesarios para el proyecto.
+
+## Cómo lo resolví o qué ayuda necesité:
+
+La configuración se resolvió revisando el rol de ejecución directamente desde IAM y creando una política específica para DynamoDB.
+
+Finalmente se estableció el permiso mínimo necesario:
+
+`dynamodb:UpdateItem`
+
+restringido al ARN de la tabla `felipe-cv-visits`.
+
+Para comprender la configuración y validar los pasos se utilizó asistencia durante el proceso.
+
+## Algo que aprendí y no sabía ayer:
+
+Aprendí que una función Lambda puede utilizar un **Execution Role de IAM** para acceder a otros servicios sin almacenar credenciales dentro del código.
+
+También aprendí que DynamoDB permite realizar incrementos atómicos mediante `UpdateItem`, evitando tener que leer el valor anterior y después escribir manualmente el nuevo valor.
+
+Además, comprendí mejor cómo CloudWatch Logs permite comprobar el ciclo de ejecución de una función Lambda mediante los registros `START`, `END` y `REPORT`.
+
+## Duda que quedó abierta:
+
+Queda pendiente comprobar el comportamiento del contador cuando sea invocado mediante API Gateway y posteriormente desde el navegador.
+
+También queda pendiente implementar y comprobar la configuración de CORS y la conexión del frontend mediante `fetch`.
+
+## Recursos creados o modificados:
+
+* Función Lambda: `felipe-cv-counter`
+* Tabla DynamoDB: `felipe-cv-visits`
+* Execution Role de Lambda
+* Política IAM: `felipe-cv-counter-dynamodb`
+* Variable de entorno `TABLE_NAME`
+* CloudWatch Log Group de Lambda
+* Código Python de la función Lambda
+* Repositorio de GitHub y commit del código correspondiente
+
+## Costo acumulado en la cuenta:
+
+**US$ 0.00 (+20)**
+
+Se mantuvo el objetivo de evitar consumo innecesario y no se realizaron pruebas masivas. La prueba de cold start se omitió debido a que fue indicada como opcional por el tutor.
+
+## Próximo paso:
+
+Crear y configurar una **HTTP API en API Gateway**, integrarla con `felipe-cv-counter`, crear la ruta `GET /visits`, configurar CORS utilizando la URL específica de CloudFront y comprobar que el endpoint devuelva correctamente el JSON con el contador.
+
+Posteriormente se conectará el endpoint con `website/app.js` mediante `fetch` para mostrar el número de visitas en el sitio web.
+
+
 
