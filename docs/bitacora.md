@@ -466,4 +466,96 @@ También queda pendiente comparar el costo teórico obtenido en AWS Pricing Calc
 ## Próximo paso:
 
 Empezar con el dia 6
+Día 6 — 11 de agosto de 2026
+
+Objetivo del día:
+
+Crear una tabla DynamoDB para almacenar el contador de visitas del CV, utilizando capacidad On-demand, definir correctamente la partition key, crear un elemento inicial y comprender el funcionamiento de las actualizaciones atómicas.
+
+Qué investigué antes de construir:
+
+Investigué cómo funciona DynamoDB como base de datos NoSQL, la diferencia entre una partition key y una sort key, el funcionamiento de la capacidad On-demand y la importancia de utilizar actualizaciones atómicas para modificar un contador.
+
+También investigué por qué una base NoSQL es suficiente para este proyecto, ya que solamente necesitamos almacenar un identificador y un número de visitas y no necesitamos relaciones complejas entre diferentes tablas.
+
+Qué hice paso a paso:
+
+Abrí Amazon DynamoDB en la región us-east-2.
+Seleccioné la opción para crear una nueva tabla.
+Creé la tabla felipe-cv-visits.
+Definí id como partition key de tipo String.
+No agregué una sort key porque el modelo solamente necesita identificar un registro para el contador.
+Seleccioné la clase de tabla Standard.
+Seleccioné capacidad On-demand.
+Mantuve el cifrado predeterminado.
+No agregué índices secundarios.
+Apliqué las etiquetas estándar del proyecto.
+Creé el elemento inicial con id = home y visits = 0.
+Modifiqué temporalmente el contador a 5 para comprobar que el atributo mantuviera el tipo Number.
+Volví a establecer el contador en 0.
+Realicé una búsqueda utilizando una clave inexistente y comprobé que DynamoDB no devolviera elementos.
+Investigué el funcionamiento de las actualizaciones atómicas y las condiciones de carrera.
+Registré el ARN de la tabla en el inventario del proyecto.
+Actualicé la información del recurso y su modelo de costo.
+
+Qué logré mostrar en pantalla:
+
+Logré mostrar la tabla felipe-cv-visits creada correctamente en DynamoDB, con id como clave de partición.
+
+También logré mostrar el elemento inicial:
+
+id = home
+visits = 0
+
+Durante el experimento modifiqué el valor a 5 y confirmé que visits permanecía como un atributo de tipo Number.
+
+Además, realicé una búsqueda de una clave inexistente y DynamoDB mostró que no había elementos que mostrar.
+
+Qué se rompió:
+
+No se presentó ningún error durante la creación o configuración de la tabla.
+
+Mensaje de error o síntoma:
+
+No hubo mensajes de error. La búsqueda de una clave inexistente devolvió el mensaje indicando que no había elementos que mostrar, lo cual correspondía al comportamiento esperado.
+
+Qué intenté durante los primeros 30 minutos:
+
+Primero revisé el modelo de datos antes de crear la tabla. Definí qué atributos necesitaba el contador y determiné que id sería la partition key y visits almacenaría el número de visitas.
+
+Después revisé las opciones de capacidad y configuración de DynamoDB para asegurarme de utilizar On-demand y evitar configuraciones innecesarias como sort keys o índices secundarios.
+
+Cómo lo resolví o qué ayuda necesité:
+
+Seguí la documentación y las instrucciones del laboratorio para diseñar la tabla. También utilicé orientación durante la configuración para verificar que la partition key, los tipos de datos, la capacidad On-demand y el elemento inicial fueran correctos.
+
+Los experimentos permitieron comprobar directamente el comportamiento de DynamoDB antes de continuar con la integración del contador.
+
+Algo que aprendí y no sabía ayer:
+
+Aprendí que DynamoDB puede utilizar una partition key para identificar directamente un elemento y que no siempre es necesario utilizar una sort key.
+
+También aprendí que las unidades de lectura y escritura de DynamoDB dependen de factores como el tamaño del elemento y el tipo de consistencia.
+
+Además, aprendí que una actualización atómica es importante para contadores porque evita problemas de concurrencia que pueden provocar que se pierdan incrementos cuando varias solicitudes ocurren simultáneamente.
+
+Duda que quedó abierta:
+
+Queda pendiente comprender y realizar la integración entre Lambda, API Gateway y DynamoDB para que el contador pueda actualizarse automáticamente cuando un usuario cargue la página.
+
+Recursos creados o modificados:
+
+Tabla DynamoDB: felipe-cv-visits
+Elemento inicial: id = home, visits = 0
+ARN:
+arn:aws:dynamodb:us-east-2:450653396200:table/felipe-cv-visits
+Inventario del proyecto actualizado.
+Modelo de costos de DynamoDB actualizado.
+
+Costo acumulado en la cuenta: US$ __0__
+
+Próximo paso:
+
+Integrar DynamoDB con Lambda y API Gateway para implementar el contador de visitas del CV y realizar una actualización atómica del valor almacenado.
+
 
