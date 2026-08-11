@@ -685,5 +685,115 @@ Crear y configurar una **HTTP API en API Gateway**, integrarla con `felipe-cv-co
 
 Posteriormente se conectará el endpoint con `website/app.js` mediante `fetch` para mostrar el número de visitas en el sitio web.
 
+Bitácora — Día 8 — 11 de agosto de 2026
+Objetivo del día:
+
+Unir el navegador, la API, la función Lambda y DynamoDB para que la página pública del CV consulte el contador de visitas y muestre el valor actualizado. Configurar CORS para permitir únicamente el origen público de CloudFront.
+
+Qué investigué antes de construir:
+
+Investigué cómo funcionan las HTTP API de API Gateway, las rutas, el método GET, las solicitudes fetch() desde JavaScript y el intercambio de recursos entre diferentes orígenes mediante CORS.
+
+También revisé cómo API Gateway conecta la solicitud con Lambda y cómo Lambda actualiza DynamoDB mediante UpdateItem.
+
+Qué hice paso a paso:
+Creé una HTTP API en API Gateway.
+Seleccioné felipe-cv-counter como integración Lambda.
+
+Creé la ruta:
+
+GET /visits
+Utilicé la etapa $default con despliegue automático.
+
+Configuré CORS para permitir únicamente:
+
+https://d1dkxi70hbq20p.cloudfront.net
+Permití el método GET y el encabezado Content-Type.
+Probé la URL de API Gateway y comprobé que devolvía una respuesta HTTP 200.
+Creé/modifiqué app.js para realizar una petición fetch() a /visits.
+El JavaScript convierte la respuesta a JSON y muestra data.count dentro de #visit-count.
+Subí la nueva versión de index.html y app.js al bucket S3.
+Realicé la invalidación correspondiente en CloudFront.
+Probé la página pública desde el navegador.
+Detecté un problema de CORS y revisé la consola y las solicitudes de red.
+Corregí el origen permitido en API Gateway.
+Volví a probar la página y comprobé que el contador se mostraba correctamente.
+Qué logré mostrar en pantalla:
+
+La página pública del CV muestra correctamente el número de visitas.
+
+La petición:
+
+GET /visits
+
+devuelve una respuesta JSON con el contador:
+
+{
+  "count": X
+}
+
+El valor recibido se muestra automáticamente en la página mediante JavaScript.
+
+Qué se rompió:
+
+La primera prueba desde la página pública no podía leer la respuesta de API Gateway debido a una configuración incorrecta de CORS.
+
+Mensaje de error o síntoma:
+
+El navegador mostró:
+
+Solicitud desde otro origen bloqueada...
+falta la cabecera CORS 'Access-Control-Allow-Origin'
+Código de estado: 200
+
+El fetch() terminó mostrando:
+
+Error al obtener el contador:
+TypeError: NetworkError when attempting to fetch resource.
+Qué intenté durante los primeros 30 minutos:
+
+Revisé que index.html contuviera el elemento #visit-count, comprobé que app.js estuviera siendo cargado por la página y revisé las solicitudes de Network y los mensajes de la consola del navegador.
+
+También comprobé que la API respondiera correctamente con código HTTP 200.
+
+Cómo lo resolví o qué ayuda necesité:
+
+Identifiqué que el problema estaba en CORS de API Gateway. El origen permitido no estaba configurado correctamente.
+
+Configuré como origen permitido únicamente:
+
+https://d1dkxi70hbq20p.cloudfront.net
+
+Después de guardar la configuración y volver a cargar la página, el navegador pudo leer la respuesta de la API y el contador comenzó a mostrarse correctamente.
+
+Algo que aprendí y no sabía ayer:
+
+Aprendí que una API puede devolver HTTP 200 y aun así el navegador impedir que JavaScript lea la respuesta debido a CORS.
+
+También comprendí que Access-Control-Allow-Origin debe contener el origen de la página que realiza la solicitud, no la URL de la API ni la ruta /visits.
+
+Duda que quedó abierta:
+
+Queda pendiente profundizar en el funcionamiento de CORS, especialmente en las solicitudes OPTIONS y en qué situaciones se requiere una solicitud preflight.
+
+Recursos creados o modificados:
+API HTTP de API Gateway.
+Ruta GET /visits.
+Configuración CORS de API Gateway.
+Función Lambda felipe-cv-counter.
+Archivo app.js.
+Archivo index.html.
+Bucket S3 del CV.
+Distribución CloudFront.
+Tabla DynamoDB felipe-cv-visits.
+Código de Lambda documentado en el repositorio.
+Diagrama actualizado de la arquitectura.
+Costo acumulado en la cuenta:
+
+US$ __0$__
+
+Próximo paso:
+
+Comenzar el Día 9 del proyecto.
 
 
