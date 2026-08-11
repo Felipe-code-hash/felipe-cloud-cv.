@@ -1,0 +1,1 @@
+Método de detección propuesto: utilizar un monitoreo periódico de la URL pública mediante una comprobación HTTP/HTTPS que alerte cuando el sitio no responda correctamente. En el proyecto actual no se implementa un monitor permanente para evitar agregar servicios y costos innecesarios.
