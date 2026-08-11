@@ -1,2 +1,3 @@
 # felipe-cloud-cv.
-Este repositorio contendra el cv de Felipe Alvarado
+Este repositorio contendrá el cv de Felipe Alvarado
+Este repo se trata sobre una pagina web la cual es un CV, este mismo cuenta las visitas mediante de servicios de AWS como dynamoDB, lambda, s3, api gateway, cloudfront y cloudwatch. En este repo se verán las evidencias de dicho proyecto, como capturas de la creación del mismo, y la bitácora la cual incluye toda la evidencia textual de lo que hemos hecho a lo largo de los días y en que día específicamente, aquí se encuentran archivos como index html el cual es la estructura de la pagina y styles css el cual le da el estilo a la pagina.
