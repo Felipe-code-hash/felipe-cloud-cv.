@@ -1,0 +1,1 @@
+No fue posible consultar AWS Billing debido a que la identidad utilizada no posee permisos para acceder a la información de facturación. Como evidencia disponible, el saldo de créditos de AWS se mantiene intacto, por lo que no se observa consumo de créditos durante el desarrollo del proyecto. El costo monetario exacto no pudo verificarse desde la identidad utilizada.
