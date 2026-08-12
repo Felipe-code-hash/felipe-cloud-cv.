@@ -124,3 +124,38 @@ Se verificó que:
 - Las alarmas de CloudWatch permanecen asociadas al monitoreo de Lambda.
 
 Estas mejoras se realizaron como una etapa adicional posterior a la finalización de los nueve días principales del proyecto, con el propósito de fortalecer la arquitectura y demostrar prácticas adicionales de seguridad, observabilidad y control de tráfico.
+
+
+
+## Actividad adicional — Actualización y mejora del CV en la nube
+
+Como actividad adicional al desarrollo del proyecto, se realizó una actualización del contenido y diseño del CV web, con el objetivo de mejorar su presentación profesional y reflejar nuevos avances obtenidos durante el desarrollo del proyecto.
+
+Se modificó el frontend utilizando **HTML y CSS**, manteniendo el diseño visual original y la estructura general de la página. Se incorporó una nueva sección de **Experiencia profesional**, donde se registró la pasantía realizada en **Arkkosoft del 3 al 14 de agosto de 2026**, relacionada con el desarrollo del CV en la nube y el uso de servicios de AWS.
+
+También se agregó una sección de **Certificaciones**, incorporando las certificaciones obtenidas mediante **Cisco Networking Academy**: Introducción al Internet de las Cosas, CSS Essentials y HTML Essentials. Para mejorar la presentación visual, se utilizaron los badges oficiales proporcionados mediante Credly y se organizaron dentro de una carpeta `badges/` en el proyecto.
+
+Antes de actualizar el sitio público, se realizaron pruebas localmente en Visual Studio Code para comprobar que los nuevos elementos se mostraran correctamente, que el diseño responsive continuara funcionando y que el contador de visitas mantuviera su estructura y funcionamiento.
+
+Posteriormente, se actualizaron los archivos correspondientes en **Amazon S3**, incluyendo el nuevo `index.html`, `styles.css` y los tres badges. No fue necesario modificar `app.js`, Lambda, API Gateway ni DynamoDB, debido a que la lógica del contador de visitas no sufrió cambios.
+
+Finalmente, se realizó una **invalidación selectiva de CloudFront** para los archivos modificados y agregados:
+
+```text
+/index.html
+/styles.css
+/badges/iot-badge.png
+/badges/css-essentials-badge.png
+/badges/html-essentials-badge.png
+```
+
+Se decidió realizar una invalidación específica en lugar de utilizar `/*`, evitando eliminar innecesariamente de la caché otros archivos que no habían sido modificados.
+
+### Resultado
+
+El CV quedó actualizado y disponible mediante CloudFront, incorporando la experiencia profesional de la pasantía, las certificaciones de Cisco Networking Academy y sus respectivos badges, manteniendo al mismo tiempo la arquitectura cloud y las funcionalidades previamente implementadas.
+
+### Aprendizaje
+
+Esta actividad permitió reforzar el proceso de actualización de aplicaciones web desplegadas en la nube, comprendiendo la relación entre los archivos estáticos almacenados en **S3**, la distribución mediante **CloudFront** y la necesidad de utilizar invalidaciones de caché cuando se actualiza contenido. También permitió practicar la organización de recursos estáticos y la integración de nuevos elementos visuales sin afectar los componentes funcionales existentes.
+
