@@ -136,6 +136,97 @@ También se revisaron los registros `START`, `END` y `REPORT` generados por Lamb
 
 Se utiliza para controlar los permisos de los recursos y aplicar el principio de mínimo privilegio.
 
+
+## Mejoras adicionales posteriores al proyecto
+
+Después de completar las etapas principales del proyecto, se implementaron mejoras adicionales orientadas a fortalecer la seguridad, observabilidad y control de la infraestructura.
+
+### Observabilidad y monitoreo
+
+Se implementó un dashboard de Amazon CloudWatch para supervisar el comportamiento de la función Lambda `felipe-cv-counter`.
+
+Se añadieron métricas para:
+
+- Invocations
+- Errors
+- Duration
+- Throttles
+
+También se crearon tres alarmas:
+
+| Alarma | Métrica | Estadística | Umbral | Período |
+|---|---|---|---|---|
+| `felipe-cv-lambda-errors` | Errors | Sum | ≥ 1 | 5 minutos |
+| `felipe-cv-lambda-duration` | Duration | Average | ≥ 1000 ms | 5 minutos |
+| `felipe-cv-lambda-throttles` | Throttles | Sum | ≥ 1 | 5 minutos |
+
+Las alarmas utilizan el tema de Amazon SNS `felipe-cv-alertas` como destino para las notificaciones.
+
+### Seguridad adicional en CloudFront
+
+Se reforzó la seguridad de la distribución de CloudFront mediante diferentes mecanismos nativos:
+
+- HTTPS para las comunicaciones.
+- Origin Access Control (OAC) para mantener el bucket S3 privado.
+- AWS Shield Standard para protección DDoS básica.
+- Restricción geográfica mediante CloudFront para permitir el acceso únicamente desde Costa Rica.
+- Response Headers Policy personalizada denominada `felipe-cv-security-headers`.
+
+La política de headers incluye:
+
+- `Strict-Transport-Security` (HSTS)
+- `Content-Security-Policy` (CSP)
+- `X-Content-Type-Options: nosniff`
+- `Referrer-Policy: strict-origin-when-cross-origin`
+- `X-Frame-Options: DENY`
+
+La Content Security Policy permite que el sitio cargue recursos desde su propio origen y permite específicamente las conexiones necesarias hacia la API de API Gateway utilizada por el contador de visitas.
+
+### Protección de API Gateway
+
+Se implementaron controles adicionales sobre la HTTP API `felipe-cv-api`.
+
+#### Throttling
+
+Se configuró limitación de solicitudes para proteger los recursos posteriores de la arquitectura:
+
+- Rate limit: **10 solicitudes por segundo**
+- Burst limit: **20 solicitudes**
+
+Cuando se supera el límite establecido, API Gateway puede responder con `429 Too Many Requests`, evitando que un volumen excesivo de solicitudes llegue directamente a Lambda y DynamoDB.
+
+#### CORS
+
+Se configuró CORS para permitir solicitudes desde el dominio de CloudFront utilizado por el CV.
+
+Configuración principal:
+
+- Allowed Origin: dominio de CloudFront del proyecto.
+- Allowed Method: `GET`
+- Allowed Credentials: `No`
+- Max Age: `300 segundos`
+
+Esto limita las solicitudes CORS realizadas desde navegadores a la aplicación web del proyecto.
+
+### Evaluación de AWS WAF
+
+Como parte de las mejoras de seguridad se evaluó la implementación de AWS WAF sobre CloudFront.
+
+Se decidió no habilitar una Web ACL tradicional debido a que AWS WAF utiliza un modelo de precios independiente y el objetivo del proyecto es mantener los costos lo más cercanos posible a $0.
+
+En su lugar, se aprovecharon mecanismos de seguridad nativos y gratuitos de CloudFront, como Shield Standard y las restricciones geográficas.
+
+### Verificación final
+
+Después de implementar las mejoras se verificó que:
+
+- El sitio continúa funcionando correctamente.
+- El contador de visitas continúa realizando solicitudes hacia API Gateway.
+- Lambda continúa ejecutándose correctamente.
+- DynamoDB continúa almacenando el contador.
+- Las nuevas políticas de seguridad no interrumpieron el funcionamiento del sitio.
+- El throttling quedó configurado para limitar tráfico excesivo hacia la API.
+
 ---
 
 ## 4. Región y resultados de latencia
