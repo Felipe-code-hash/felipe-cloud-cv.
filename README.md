@@ -506,3 +506,94 @@ Con más tiempo se podrían implementar mejoras como:
 * Automatizar la limpieza de recursos de pruebas.
 
 Estas mejoras permitirían reducir tareas manuales, aumentar la observabilidad y facilitar el mantenimiento del proyecto a largo plazo.
+
+
+
+## Mejoras adicionales — Rediseño del CV y certificaciones
+
+Como parte de las mejoras posteriores al desarrollo inicial del proyecto, se realizó una actualización visual y de contenido del CV web, manteniendo la arquitectura y los servicios de AWS previamente implementados.
+
+### Rediseño y actualización del CV
+
+Se actualizó el frontend del CV utilizando HTML y CSS, conservando el diseño visual existente y ampliando su contenido profesional.
+
+Las modificaciones incluyeron:
+
+* Incorporación de una nueva sección de **Experiencia profesional**.
+* Registro de la pasantía realizada en **Arkkosoft** del **3 al 14 de agosto de 2026**.
+* Descripción de las actividades realizadas durante la pasantía, relacionadas con administración en la nube, desarrollo web e implementación de infraestructura AWS.
+* Incorporación de una sección de **Certificaciones**.
+* Inclusión de certificaciones obtenidas mediante **Cisco Networking Academy**:
+
+  * Introducción al Internet de las Cosas.
+  * CSS Essentials.
+  * HTML Essentials.
+* Incorporación de los badges oficiales de las certificaciones mediante imágenes obtenidas desde Credly.
+* Organización de los badges dentro de una carpeta `badges/` para mantener una estructura ordenada del proyecto.
+* Adaptación del diseño para dispositivos móviles mediante CSS responsive.
+* Conservación del contador de visitas existente y de su integración con AWS Lambda y DynamoDB.
+* Conservación de la sección de contacto y del funcionamiento del correo electrónico.
+
+### Estructura actualizada del frontend
+
+La estructura relevante del proyecto quedó organizada de la siguiente manera:
+
+```text
+proyecto/
+├── index.html
+├── styles.css
+├── app.js
+└── badges/
+    ├── iot-badge.png
+    ├── css-essentials-badge.png
+    └── html-essentials-badge.png
+```
+
+El archivo `index.html` contiene la estructura y el contenido del CV, `styles.css` controla la presentación visual y el diseño responsive, mientras que `app.js` mantiene la funcionalidad del contador de visitas.
+
+Los badges se almacenan localmente dentro de `badges/` y son servidos posteriormente junto con el resto del contenido estático mediante Amazon S3 y CloudFront.
+
+### Actualización del contenido en AWS
+
+Una vez comprobado que el nuevo diseño funcionaba correctamente en el entorno local, se actualizaron los archivos correspondientes en el bucket de Amazon S3.
+
+Se incorporaron:
+
+* `index.html` actualizado.
+* `styles.css` actualizado.
+* Carpeta `badges/` con los tres badges de Cisco Networking Academy.
+
+El cifrado predeterminado del bucket se mantuvo sin modificaciones. Al crear la carpeta `badges/` en S3 se utilizó la opción de no especificar una clave de cifrado adicional, permitiendo que se aplicara la configuración de cifrado predeterminada del bucket.
+
+No fue necesario modificar `app.js`, Lambda, API Gateway ni DynamoDB, ya que la lógica del contador de visitas permaneció sin cambios.
+
+### Invalidación selectiva de CloudFront
+
+Después de actualizar los archivos en S3, se realizó una invalidación selectiva de la caché de CloudFront para garantizar que los usuarios recibieran las versiones actualizadas.
+
+Se invalidaron únicamente los archivos modificados o incorporados:
+
+```text
+/index.html
+/styles.css
+/badges/iot-badge.png
+/badges/css-essentials-badge.png
+/badges/html-essentials-badge.png
+```
+
+No se utilizó una invalidación global (`/*`), ya que no era necesario eliminar de la caché archivos que no habían cambiado.
+
+### Resultado
+
+El CV quedó actualizado y disponible mediante la distribución de CloudFront, incorporando:
+
+* Diseño visual conservado y mejorado.
+* Experiencia profesional en Arkkosoft.
+* Certificaciones de Cisco Networking Academy.
+* Badges oficiales de Credly.
+* Diseño responsive para dispositivos móviles.
+* Contador de visitas conectado a Lambda y DynamoDB.
+* Distribución mediante CloudFront.
+* HTTPS y las configuraciones de seguridad previamente implementadas.
+
+La actualización permitió ampliar el contenido profesional del CV sin modificar innecesariamente la arquitectura cloud ni los componentes funcionales existentes.
