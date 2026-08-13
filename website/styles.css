@@ -426,3 +426,38 @@ footer p {
         font-size: 36px;
     }
 }
+/* Certificaciones clickeables */
+
+.certificate-card {
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease;
+}
+
+.certificate-card:hover {
+    transform: translateY(-6px);
+}
+
+.certificate-card .certificate-badge img {
+    transition: transform 0.25s ease;
+}
+
+.certificate-card:hover .certificate-badge img {
+    transform: scale(1.04);
+}
+
+.certificate-link {
+    display: inline-block;
+    margin-top: 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    opacity: 0.65;
+    transition: opacity 0.25s ease;
+}
+
+.certificate-card:hover .certificate-link {
+    opacity: 1;
+}
