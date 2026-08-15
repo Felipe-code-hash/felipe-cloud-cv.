@@ -314,34 +314,6 @@ main {
    CONTADOR DE VISITAS
    ================================ */
 
-.visits-section {
-    margin-top: 80px;
-    padding: 35px;
-    text-align: center;
-    background: var(--text);
-    color: white;
-    border-radius: 14px;
-}
-
-.visits-label {
-    margin: 0 0 10px !important;
-    color: #8fc5ed !important;
-    font-size: 12px;
-    font-weight: bold;
-    letter-spacing: 2px;
-}
-
-#visit-count {
-    font-size: 42px;
-    font-weight: bold;
-    line-height: 1.2;
-}
-
-.visits-note {
-    margin: 10px auto 0 !important;
-    color: #aeb9c4 !important;
-    font-size: 13px;
-}
 
 
 /* ================================
